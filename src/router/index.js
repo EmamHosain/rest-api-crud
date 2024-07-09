@@ -202,12 +202,6 @@ const router = createRouter({
 
       ]
     },
-
-
-
-
-
-
     {
       path: '/login',
       component: GuestLayout,
@@ -252,21 +246,21 @@ const router = createRouter({
 
       ],
     },
+  ],
+  scrollBehavior(to, from, savedPosition) {
 
-    // start 
+    if (savedPosition) {
+      return { top: 0 }
+    }
+    return {
+      // could also be
+      el: document.getElementById('product'),
+      el: '#product',
+      // 10px above the element
+      top: 0,
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-  ]
+  },
 })
 
 export default router

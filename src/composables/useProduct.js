@@ -17,13 +17,15 @@ export default function useProduct() {
 
 
 
-    const getProducts = async () => {
+    const getProducts = async (page = 1) => {
         store.errors = null;
         store.setOnProgressbar();
 
+
+
         try {
             await getCsrfCookie()
-            const res = axios.get('/api/products', getHeaderConfig(store.access_token));
+            const res = axios.get(`/api/products?page=${page}`, getHeaderConfig(store.access_token));
             res.then((value) => {
                 if (parseInt(value.status) === 200) {
                     store.setOffProgressbar();
@@ -41,6 +43,30 @@ export default function useProduct() {
             console.log('get products error', error)
         }
     }
+
+
+    const getEventsUsingPagination = async (page = 1) => {
+        const store = useAuthStore();
+        const eventStore = useEventStore();
+        try {
+            await axios.get('/sanctum/csrf-cookie');
+            const res = await axios.get(`/api/events?page=${page}`, getHeaderConfig(store.access_token));
+            if (res.status == 200) {
+                // eventStore.setEvents(res.data.data)
+                // eventStore.eventLinks = res.data.meta
+                // eventStore.setEvents(res.data.data)
+                eventStore.eventwithPagination = res.data
+
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
+
+
 
 
     return { getProducts }
