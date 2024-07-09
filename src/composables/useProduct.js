@@ -31,6 +31,12 @@ export default function useProduct() {
                     store.setOffProgressbar();
                     productStore.setProduct(value.data.data.data)
                     productStore.setProductWithPaginate(value.data.data)
+
+                    // Scroll to the top of the #product div
+                    const productDiv = document.getElementById('product');
+                    if (productDiv) {
+                        productDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
                 }
 
             }).catch((error) => {
