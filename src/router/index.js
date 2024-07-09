@@ -6,8 +6,6 @@ import GuestLayout from '../layouts/GuestLayout.vue';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 // start 
-import SigninView from '@/views/Authentication/SigninView.vue'
-import SignupView from '@/views/Authentication/SignupView.vue'
 import CalendarView from '@/views/CalendarView.vue'
 import BasicChartView from '@/views/Charts/BasicChartView.vue'
 import ECommerceView from '@/views/Dashboard/ECommerceView.vue'
@@ -20,7 +18,6 @@ import AlertsView from '@/views/UiElements/AlertsView.vue'
 import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
 // end
-
 
 
 
@@ -97,6 +94,17 @@ const router = createRouter({
           component: ECommerceView,
           beforeEnter: [checkIfUserIsNotLoggedIn]
         },
+
+        {
+          path: '/products',
+          name: 'products',
+          component: () => import('../views/Product/ProductView.vue'),
+          meta: {
+            title: 'Products'
+          },
+          beforeEnter: [checkIfUserIsNotLoggedIn]
+        },
+
         {
           path: '/calendar',
           name: 'calendar',
@@ -107,6 +115,9 @@ const router = createRouter({
           beforeEnter: [checkIfUserIsNotLoggedIn]
 
         },
+
+
+
 
         {
           path: '/profile',
@@ -188,26 +199,7 @@ const router = createRouter({
           beforeEnter: [checkIfUserIsNotLoggedIn]
 
         },
-        {
-          path: '/auth/signin',
-          name: 'signin',
-          component: SigninView,
-          meta: {
-            title: 'Signin'
-          },
-          beforeEnter: [checkIfUserIsNotLoggedIn]
 
-        },
-        {
-          path: '/auth/signup',
-          name: 'signup',
-          component: SignupView,
-          meta: {
-            title: 'Signup'
-          },
-          beforeEnter: [checkIfUserIsNotLoggedIn]
-
-        }
       ]
     },
 
@@ -220,7 +212,7 @@ const router = createRouter({
       path: '/login',
       component: GuestLayout,
       children: [
-       
+
         {
           path: '',
           name: 'login-page',

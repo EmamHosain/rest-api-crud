@@ -27,7 +27,6 @@ export default function useAuth() {
             if (res.data.success === true) {
                 store.setToken(res.data.access_token);
                 store.setUser(res.data.user)
-
             }
         } catch (error) {
             store.clearStoredData();
