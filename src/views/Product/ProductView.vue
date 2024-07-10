@@ -5,18 +5,21 @@ import ProductTwo from '@/assets/images/product/product-02.png'
 import ProductThree from '@/assets/images/product/product-03.png'
 import ProductFour from '@/assets/images/product/product-04.png'
 import { TailwindPagination } from 'laravel-vue-pagination';
-
+import { RouterLink } from 'vue-router'
 import useProduct from '@/composables/useProduct'
 import { useProductStore } from '@/stores/useProductStore'
 
-const { getProducts } = useProduct();
+const { getProducts, deleteProduct } = useProduct();
 const productStore = useProductStore();
 </script>
 
 <template>
-    <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark" id="product">
-        <div class="py-6 px-4 md:px-6 xl:px-7.5">
+    <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+        id="product">
+        <div class="py-6 px-4 md:px-6 xl:px-7.5 flex justify-between">
             <h4 class="text-xl font-bold text-black dark:text-white">Top Products</h4>
+            <router-link :to="{ name: 'add-product-page' }"
+                class="text-sm px-4 py-1.5 bg-green-500 rounded-md text-white capitalize">add product</router-link>
         </div>
 
         <!-- Table Header -->
@@ -69,7 +72,8 @@ const productStore = useProductStore();
                 <div class="col-span-1 flex items-center">
                     <div class="flex gap-2">
                         <button class="text-sm px-4 py-1.5 bg-green-500 rounded-md text-white">Edit</button>
-                        <button class="text-sm px-4 py-1.5 bg-red rounded-md text-white">Delete</button>
+                        <button @click="deleteProduct(product.id)"
+                            class="text-sm px-4 py-1.5 bg-red rounded-md text-white">Delete</button>
 
                     </div>
                 </div>

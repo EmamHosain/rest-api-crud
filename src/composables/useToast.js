@@ -4,7 +4,7 @@ import 'vue3-toastify/dist/index.css';
 
 
 
-export default function useTast() {
+export default function useTost() {
 
 
 

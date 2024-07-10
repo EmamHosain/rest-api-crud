@@ -97,13 +97,23 @@ const router = createRouter({
 
         {
           path: '/products',
-          name: 'products',
+          name: 'view-products-page',
           component: () => import('../views/Product/ProductView.vue'),
           meta: {
             title: 'Products'
           },
           beforeEnter: [checkIfUserIsNotLoggedIn]
         },
+        {
+          path: '/add-product',
+          name: 'add-product-page',
+          component: () => import('../views/Product/AddProductView.vue'),
+          meta: {
+            title: 'Add product'
+          },
+          beforeEnter: [checkIfUserIsNotLoggedIn]
+        },
+
 
         {
           path: '/calendar',
@@ -248,19 +258,9 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-
-    if (savedPosition) {
-      return { top: 0 }
-    }
-    return {
-      // could also be
-      el: document.getElementById('product'),
-      el: '#product',
-      // 10px above the element
-      top: 0,
-    }
-
+    return { top: 0 }
   },
+  
 })
 
 export default router
