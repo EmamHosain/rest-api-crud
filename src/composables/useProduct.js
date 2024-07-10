@@ -98,7 +98,11 @@ export default function useProduct() {
             const res = await axios.post(`/api/products/`, formData, getHeaderConfig(store.access_token));
 
             if (parseInt(res.status) === 201) {
+                productStore.setProduct(res.data.data.data)
+                productStore.setProductWithPaginate(res.data.data)
                 store.setOffProgressbar();
+
+                // reset form data
                 data.productName = ''
                 data.shortDescription = ''
                 data.price = ''
