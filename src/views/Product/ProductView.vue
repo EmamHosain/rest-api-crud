@@ -9,7 +9,7 @@ import { RouterLink } from 'vue-router'
 import useProduct from '@/composables/useProduct'
 import { useProductStore } from '@/stores/useProductStore'
 
-const { getProducts, deleteProduct } = useProduct();
+const { getProducts, deleteProduct, selectProductForUpdate } = useProduct();
 const productStore = useProductStore();
 </script>
 
@@ -49,9 +49,9 @@ const productStore = useProductStore();
                 class="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
                 <div class="col-span-2 flex items-center">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                        {{ product.id }}
+
                         <div class="h-12.5 w-15 rounded-md">
-                            <img :src="product.image" alt="product" />
+                            <img :src="product.image" alt="product" class="w-full h-full" />
                         </div>
                         <p class="text-sm font-medium text-black dark:text-white">{{ product.title }}</p>
                     </div>
@@ -71,7 +71,8 @@ const productStore = useProductStore();
                 </div>
                 <div class="col-span-1 flex items-center">
                     <div class="flex gap-2">
-                        <button class="text-sm px-4 py-1.5 bg-green-500 rounded-md text-white">Edit</button>
+                        <button @click="selectProductForUpdate(product.id)"
+                            class="text-sm px-4 py-1.5 bg-green-500 rounded-md text-white">Edit</button>
                         <button @click="deleteProduct(product.id)"
                             class="text-sm px-4 py-1.5 bg-red rounded-md text-white">Delete</button>
 

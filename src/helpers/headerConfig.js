@@ -3,6 +3,7 @@ export const getHeaderConfig = (token) => {
         headers: {
             "Authorization" : `Bearer ${token}`,
             "Accept": "application/json",
+            'Content-Type': 'multipart/form-data'
         }
     }  
     return config;

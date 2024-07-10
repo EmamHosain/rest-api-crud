@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 export const useProductStore = defineStore('product', {
     state: () => ({
         products: [],
-        productsWithPaginate: {}
+        productsWithPaginate: {},
+        selectedProduct: null,
     }),
 
 
@@ -11,6 +12,9 @@ export const useProductStore = defineStore('product', {
     getters: {
         getProducts() {
             return this.products
+        },
+        getSelectedProduct() {
+            return this.selectedProduct
         }
     },
 
@@ -23,5 +27,8 @@ export const useProductStore = defineStore('product', {
         setProductWithPaginate(data) {
             this.productsWithPaginate = data
         },
+        setSelectedProduct(product) {
+            this.selectedProduct = product
+        }
     },
 });

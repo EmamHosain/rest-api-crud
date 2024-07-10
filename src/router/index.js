@@ -18,7 +18,7 @@ import AlertsView from '@/views/UiElements/AlertsView.vue'
 import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
 // end
-
+import { useProductStore } from '@/stores/useProductStore';
 
 
 
@@ -79,6 +79,16 @@ const loginNavigationAttempt = (to, from, next) => {
   next();
 }
 
+const ifNotSelectProduct = (to, from, next) => {
+  const productStore = useProductStore();
+  if (!productStore.selectedProduct) {
+    next('/products');
+  } else {
+    next();
+  }
+
+}
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,6 +122,16 @@ const router = createRouter({
             title: 'Add product'
           },
           beforeEnter: [checkIfUserIsNotLoggedIn]
+        },
+
+        {
+          path: '/update-product',
+          name: 'update-product-page',
+          component: () => import('../views/Product/UpdateProductView.vue'),
+          meta: {
+            title: 'Update product'
+          },
+          beforeEnter: [checkIfUserIsNotLoggedIn, ifNotSelectProduct]
         },
 
 
@@ -260,7 +280,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     return { top: 0 }
   },
-  
+
 })
 
 export default router
