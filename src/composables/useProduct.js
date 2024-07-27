@@ -48,6 +48,30 @@ export default function useProduct() {
         }
     }
 
+    // const getProductsAfterLogin = async () => {
+    //     store.errors = null;
+    //     store.setOnProgressbar();
+
+    //     try {
+    //         await getCsrfCookie()
+    //         const res = await axios.get(`/api/products?page=${page}`, getHeaderConfig(store.access_token));
+    //         if (parseInt(res.status) === 200) {
+    //             store.setOffProgressbar();
+    //             productStore.setProduct(res.data.data.data)
+    //             productStore.setProductWithPaginate(res.data.data)
+
+    //             // Scroll to the top of the #product div
+    //             const productDiv = document.getElementById('product');
+    //             if (productDiv) {
+    //                 productDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    //             }
+    //         }
+    //     } catch (error) {
+    //         store.setOffProgressbar();
+    //         console.log('get products error', error)
+    //     }
+    // }
+
 
     const deleteProduct = async (id) => {
         store.errors = null;
@@ -160,11 +184,11 @@ export default function useProduct() {
         formData.append('short_description', data.shortDescription);
         formData.append('price', data.price);
         formData.append('product_quantity', data.productQuantity);
-        
+
         if (data.image) {
             formData.append('image', data.image);
         }
-       
+
         try {
             await getCsrfCookie();
             const res = await axios.post(`/api/products/${data.id}`, formData, getHeaderConfig(store.access_token));
