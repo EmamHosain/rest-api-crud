@@ -3,7 +3,6 @@
 
 const props = defineProps({
     errors: Array,
-    isVisible: Boolean
 })
 
 </script>

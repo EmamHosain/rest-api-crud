@@ -40,16 +40,12 @@ export default function useAuth() {
 
 
     const login = async (data) => {
-        data.loading = true;
         store.errors = null;
         store.setOnProgressbar();
-
         try {
             await getCsrfCookie();
             const res = await axios.post('/api/login', data.user);
-            data.loading = false;
-
-            if (res.data.success === true) {
+            if (parseInt(res.status) === 200) {
                 store.setToken(res.data.access_token)
                 store.setOffProgressbar();
                 store.setStartPreloader();
@@ -60,10 +56,8 @@ export default function useAuth() {
                 store.setEndPreloader();
 
             }
-
-
         } catch (error) {
-            data.loading = false;
+
             store.setOffProgressbar();
             if (error.response.status === 422) {
                 store.setErrors(error.response.data.errors);
@@ -80,7 +74,7 @@ export default function useAuth() {
         try {
             await getCsrfCookie();
             const res = await axios.post('/api/logout', '', getHeaderConfig(store.access_token));
-            if (parseInt(res.status) === 200) {
+            if (parseInt(res.status) === 204) {
                 console.log('logout status', true);
                 store.clearStoredData();
                 store.setOffProgressbar();
@@ -107,30 +101,22 @@ export default function useAuth() {
 
 
     const register = async (data) => {
-        data.loading = true;
         store.clearErrors();
         store.setOnProgressbar();
-
-
         if (data.user.password !== data.user.password_confirmation) {
             error('Password not match')
-            data.loading = false;
             return;
         }
-
         try {
             await getCsrfCookie();
             const res = await axios.post(`/api/register`, data.user);
-            data.loading = false;
-
-            if (res.data.success === true) {
+            if (parseInt(res.status) === 201) {
                 success(res.data.message);
                 store.setOffProgressbar();
                 router.push({ name: 'login-page' })
 
             }
         } catch (error) {
-            data.loading = false;
             store.setOffProgressbar();
             if (error.response.status === 422) {
                 store.setErrors(error.response.data.errors);
