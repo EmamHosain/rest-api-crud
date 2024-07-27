@@ -4,12 +4,14 @@ import { getHeaderConfig } from "@/helpers/headerConfig";
 import { useAuthStore } from "@/stores/useAuthStore";
 import useTost from "./useToast";
 import router from "@/router";
+import useProduct from "./useProduct";
 
 
 export default function useAuth() {
 
     const store = useAuthStore();
     const { success, error } = useTost();
+    const { getProducts } = useProduct();
 
 
     const getCsrfCookie = async () => {
@@ -22,7 +24,7 @@ export default function useAuth() {
 
     const getUser = async () => {
         try {
-            await axios.get('/sanctum/csrf-cookie');
+            await getCsrfCookie();
             const res = await axios.get('/api/users', getHeaderConfig(store.access_token));
             if (res.data.success === true) {
                 store.setToken(res.data.access_token);
@@ -52,6 +54,7 @@ export default function useAuth() {
                 store.setOffProgressbar();
                 store.setStartPreloader();
                 await getUser();
+                await getProducts();
                 success(res.data.message);
                 router.push({ name: 'home-page' })
                 store.setEndPreloader();
@@ -75,6 +78,7 @@ export default function useAuth() {
     const logout = async () => {
         store.setOnProgressbar();
         try {
+            await getCsrfCookie();
             const res = await axios.post('/api/logout', '', getHeaderConfig(store.access_token));
             if (res.data.success === true) {
                 store.clearStoredData();
@@ -117,11 +121,11 @@ export default function useAuth() {
                 success(res.data.message);
                 store.setOffProgressbar();
                 router.push({ name: 'login-page' })
-              
+
             }
         } catch (error) {
             data.loading = false;
-           store.setOffProgressbar();
+            store.setOffProgressbar();
             if (error.response.status === 422) {
                 store.setErrors(error.response.data.errors);
             }
