@@ -19,8 +19,8 @@ const errors = computed(() => store.errors)
 const data = reactive({
     loading: false,
     user: {
-        email: '',
-        password: '',
+        email: 'admin@gmail.com',
+        password: 'password',
     }
 
 })

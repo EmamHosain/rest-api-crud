@@ -80,11 +80,17 @@ export default function useAuth() {
         try {
             await getCsrfCookie();
             const res = await axios.post('/api/logout', '', getHeaderConfig(store.access_token));
-            if (res.data.success === true) {
+            if (parseInt(res.status) === 200) {
+                console.log('logout status', true);
                 store.clearStoredData();
                 store.setOffProgressbar();
-                success(res.data.message);
+                success('User logout successfully');
                 router.push({ name: 'login-page' })
+
+            } else {
+                console.log('logout status', false);
+                store.setOffProgressbar();
+
             }
 
         } catch (error) {
