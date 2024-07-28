@@ -31,11 +31,13 @@ export default function useProduct() {
         try {
             await getCsrfCookie()
             const res = await axios.get(`/api/products?page=${page}`, getHeaderConfig(store.access_token));
+
+
             if (parseInt(res.status) === 200) {
-                store.setOffProgressbar();
+               
                 productStore.setProduct(res.data.data.data)
                 productStore.setProductWithPaginate(res.data.data)
-
+                store.setOffProgressbar();
                 // Scroll to the top of the #product div
                 const productDiv = document.getElementById('product');
                 if (productDiv) {

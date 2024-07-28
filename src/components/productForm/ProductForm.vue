@@ -39,7 +39,7 @@ const handleImageChange = (event) => {
                         </div>
 
                         <div class="w-full">
-                            <InputGroup v-model="formData.price" label="product price" type="number"
+                            <InputGroup v-model="formData.price" label="product price" type="text"
                                 placeholder="Enter product price" customClasses="w-full" />
                             <ValidationError :errors="errors && errors.price ? errors.price : []" />
 

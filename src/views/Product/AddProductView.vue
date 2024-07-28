@@ -15,10 +15,10 @@ const store = useAuthStore();
 const errors = computed(() => store.errors)
 
 const formData = reactive({
-    productName: '',
-    shortDescription: '',
-    price: '',
-    productQuantity: '',
+    productName: 'product',
+    shortDescription: 'description',
+    price: '43',
+    productQuantity: '43',
     image: '',
 })
 

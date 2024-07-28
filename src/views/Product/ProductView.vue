@@ -24,7 +24,7 @@ const productStore = useProductStore();
 
         <!-- Table Header -->
         <div
-            class="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
+            class="grid grid-cols-10 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-10 md:px-6 2xl:px-7.5">
             <div class="col-span-2 flex items-center">
                 <p class="font-medium">Product Name</p>
             </div>
@@ -38,6 +38,12 @@ const productStore = useProductStore();
                 <p class="font-medium">Price</p>
             </div>
             <div class="col-span-1 flex items-center">
+                <p class="font-medium capitalize">created by</p>
+            </div>
+            <div class="col-span-1 flex items-center">
+                <p class="font-medium capitalize">updated by</p>
+            </div>
+            <div class="col-span-1 flex items-center">
                 <p class="font-medium capitalize">actions</p>
             </div>
 
@@ -46,7 +52,7 @@ const productStore = useProductStore();
         <!-- Table Rows -->
         <div class=" border-b border-stroke dark:border-strokedark">
             <div v-for="product in productStore.products" :key="product.id"
-                class="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
+                class="grid grid-cols-10 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-10 md:px-6 2xl:px-7.5">
                 <div class="col-span-2 flex items-center">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
 
@@ -69,6 +75,17 @@ const productStore = useProductStore();
                 <div class="col-span-1 flex items-center">
                     <p class="text-sm font-medium text-meta-3">${{ product.price }}</p>
                 </div>
+                <div class="col-span-1 flex items-center ">
+                    <p class="text-sm font-medium text-meta-3 text-center ms-4 capitalize">{{ product.created_by }}</p>
+                </div>
+                <div v-if="product.updated_by === null" class="col-span-1 flex items-center">
+                    <p class="text-sm font-medium text-red text-center ms-4 capitalize">empty</p>
+                </div>
+                <div v-else class="col-span-1 flex items-center">
+                    <p class="text-sm font-medium text-meta-3 text-center ms-4 capitalize">{{ product.updated_by }}</p>
+                </div>
+
+
                 <div class="col-span-1 flex items-center">
                     <div class="flex gap-2">
                         <button @click="selectProductForUpdate(product.id)"
