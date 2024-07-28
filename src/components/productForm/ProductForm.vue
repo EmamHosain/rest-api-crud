@@ -41,7 +41,7 @@ const handleImageChange = (event) => {
                         <div class="w-full">
                             <InputGroup v-model="formData.price" label="product price" type="number"
                                 placeholder="Enter product price" customClasses="w-full" />
-                            <ValidationError :errors="errors ? errors.price : []" />
+                            <ValidationError :errors="errors && errors.price ? errors.price : []" />
 
 
                         </div>
@@ -50,7 +50,7 @@ const handleImageChange = (event) => {
                     <div class="mb-4.5">
                         <InputGroup v-model="formData.productQuantity" label="product quantity" type="number"
                             placeholder="Enter product quantity" />
-                        <ValidationError :errors="errors ? errors.product_quantity : []" />
+                        <ValidationError :errors="errors && errors.product_quantity ? errors.product_quantity : []" />
                     </div>
 
                     <div class="mb-6">
@@ -63,7 +63,7 @@ const handleImageChange = (event) => {
                             accept="image/*" id="image" />
 
                         <div>
-                            <ValidationError :errors="errors ? errors.image : []" />
+                            <ValidationError :errors="errors && errors.image ? errors.image : []" />
                         </div>
                     </div>
 
@@ -76,7 +76,7 @@ const handleImageChange = (event) => {
                         <textarea v-model="formData.shortDescription" rows="6" placeholder="Type short description"
                             class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
                         <div>
-                            <ValidationError :errors="errors ? errors.short_description : []" />
+                            <ValidationError :errors="errors && errors.short_description ? errors.short_description : []" />
                         </div>
                     </div>
 

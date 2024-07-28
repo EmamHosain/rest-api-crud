@@ -48,30 +48,6 @@ export default function useProduct() {
         }
     }
 
-    // const getProductsAfterLogin = async () => {
-    //     store.errors = null;
-    //     store.setOnProgressbar();
-
-    //     try {
-    //         await getCsrfCookie()
-    //         const res = await axios.get(`/api/products?page=${page}`, getHeaderConfig(store.access_token));
-    //         if (parseInt(res.status) === 200) {
-    //             store.setOffProgressbar();
-    //             productStore.setProduct(res.data.data.data)
-    //             productStore.setProductWithPaginate(res.data.data)
-
-    //             // Scroll to the top of the #product div
-    //             const productDiv = document.getElementById('product');
-    //             if (productDiv) {
-    //                 productDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    //             }
-    //         }
-    //     } catch (error) {
-    //         store.setOffProgressbar();
-    //         console.log('get products error', error)
-    //     }
-    // }
-
 
     const deleteProduct = async (id) => {
         store.errors = null;
@@ -175,9 +151,7 @@ export default function useProduct() {
         store.errors = null;
         productStore.selectedProduct = null
         store.setOnProgressbar();
-
-
-
+        
         const formData = new FormData();
         formData.append('_method', 'put');
         formData.append('product_name', data.productName);
@@ -192,14 +166,23 @@ export default function useProduct() {
         try {
             await getCsrfCookie();
             const res = await axios.post(`/api/products/${data.id}`, formData, getHeaderConfig(store.access_token));
+
             if (parseInt(res.status) === 200) {
                 store.setOffProgressbar();
-                productStore.setProduct(res.data.data.data)
-                productStore.setProductWithPaginate(res.data.data)
+                const products = productStore.getProducts.map((item, index, array) => {
+                    if (item.id == res.data.data.id) {
+                        return res.data.data // Replace the item with updated data
+                    } else {
+                        return item; // Keep other items unchanged
+                    }
+                })
+                productStore.setProduct(products)
                 productStore.selectedProduct = null
                 success('Product updated successfully.')
                 router.push({ name: 'view-products-page' })
             }
+
+
         } catch (error) {
             store.setOffProgressbar();
             console.log('error', error)
