@@ -2,15 +2,17 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
+        dialog: false,
+
+
+
         canSeeEmailVerifyPage: localStorage.getItem('CanSeeEmailVerifyPage') ?? false,
         canSeeResetPassPage: localStorage.getItem('CanSeeResetPassPage') ?? false,
-
-
 
         progressbar: false,
         preloader: false,
         user: null,
-        access_token: JSON.parse(localStorage.getItem('currentToken')) ?? null,
+        access_token: localStorage.getItem('currentToken') ? localStorage.getItem('currentToken') : null,
         errors: null
     }),
 
@@ -19,6 +21,12 @@ export const useAuthStore = defineStore('auth', {
     getters: {
         getUser() {
             return this.user
+        },
+        getToken() {
+            return this.access_token
+        },
+        getErrors() {
+            return this.errors
         }
     },
 
@@ -29,10 +37,9 @@ export const useAuthStore = defineStore('auth', {
             this.user = user
         },
         setToken(token) {
-            localStorage.setItem('currentToken', JSON.stringify(token))
-            this.access_token = token
+            localStorage.setItem('currentToken', token);
+            this.access_token = token;
         },
-
 
 
         // start
@@ -84,11 +91,15 @@ export const useAuthStore = defineStore('auth', {
         },
         setOffProgressbar() {
             this.progressbar = false;
-        }
+        },
         // progressbar method end
 
-
-
+        setOnDialog() {
+            this.dialog = true
+        },
+        setOffDialog() {
+            this.dialog = false
+        }
 
 
 

@@ -25,9 +25,9 @@ export default function useAuth() {
     const getUser = async () => {
         try {
             await getCsrfCookie();
-            const res = await axios.get('/api/users', getHeaderConfig(store.access_token));
-            if (res.data.success === true) {
-                store.setToken(res.data.access_token);
+            const res = await axios.get('/api/users-with-token', getHeaderConfig(store.getToken));
+            if (parseInt(res.status) === 200) {
+                store.setToken(res.data.token);
                 store.setUser(res.data.user)
             }
         } catch (error) {
@@ -40,32 +40,68 @@ export default function useAuth() {
 
 
     const login = async (data) => {
-        store.errors = null;
+        store.clearErrors();
         store.setOnProgressbar();
         try {
             await getCsrfCookie();
             const res = await axios.post('/api/login', data.user);
+
             if (parseInt(res.status) === 200) {
-                store.setToken(res.data.access_token)
+                store.setToken(res.data.token)
                 store.setOffProgressbar();
                 store.setStartPreloader();
                 await getUser();
-                await getProducts();
+                store.setEndPreloader();
                 success(res.data.message);
                 router.push({ name: 'home-page' })
+
+            }
+
+        } catch (error) {
+
+            store.setOffProgressbar();
+            console.log('login', error);
+            if (parseInt(error.response.status) === 422) {
+                store.setErrors(error.response.data.errors);
+            }
+
+
+        }
+    };
+
+    const register = async (data) => {
+        store.clearErrors();
+        store.setOnProgressbar();
+        if (data.user.password !== data.user.password_confirmation) {
+            error('Password not match')
+            return;
+        }
+        try {
+            await getCsrfCookie();
+            const res = await axios.post(`/api/register`, data.user);
+            if (parseInt(res.status) === 201) {
+                // token set
+                store.setToken(res.data.token)
+                // get user by token
+                // await getUser();
+                store.setOffProgressbar();
+                success(res.data.message);
                 store.setEndPreloader();
+
+                // redirect to home page
+                router.push({ name: 'home-page' })
 
             }
         } catch (error) {
-
             store.setOffProgressbar();
             if (error.response.status === 422) {
                 store.setErrors(error.response.data.errors);
             }
 
         }
-    };
 
+
+    }
 
 
 
@@ -74,7 +110,7 @@ export default function useAuth() {
         try {
             await getCsrfCookie();
             const res = await axios.post('/api/logout', '', getHeaderConfig(store.access_token));
-            if (parseInt(res.status) === 204) {
+            if (parseInt(res.status) === 200) {
                 console.log('logout status', true);
                 store.clearStoredData();
                 store.setOffProgressbar();
@@ -82,7 +118,7 @@ export default function useAuth() {
                 router.push({ name: 'login-page' })
 
             } else {
-                console.log('logout status', false);
+                // console.log('logout status', false);
                 store.setOffProgressbar();
 
             }
@@ -100,32 +136,6 @@ export default function useAuth() {
 
 
 
-    const register = async (data) => {
-        store.clearErrors();
-        store.setOnProgressbar();
-        if (data.user.password !== data.user.password_confirmation) {
-            error('Password not match')
-            return;
-        }
-        try {
-            await getCsrfCookie();
-            const res = await axios.post(`/api/register`, data.user);
-            if (parseInt(res.status) === 201) {
-                success(res.data.message);
-                store.setOffProgressbar();
-                router.push({ name: 'login-page' })
-
-            }
-        } catch (error) {
-            store.setOffProgressbar();
-            if (error.response.status === 422) {
-                store.setErrors(error.response.data.errors);
-            }
-
-        }
-
-
-    }
 
 
 
@@ -136,62 +146,25 @@ export default function useAuth() {
 
         try {
             await getCsrfCookie();
-            const res = await axios.put(`/api/forget-password`, {
+            const res = await axios.post(`/api/forgot-password`, {
                 email: data.user.email
             });
             data.loading = false;
 
-            if (res.data.success === true) {
+            if (parseInt(res.status) === 200) {
+                data.user.email = ''
                 store.setOffProgressbar();
                 success(res.data.message);
-                store.setCanSeeEmailVerifyPage(true);
-                router.push({ name: 'otp-verify-page' })
-
+                console.log('forgot password success', res);
+                // store.setCanSeeEmailVerifyPage(true);
+                // router.push({name:'reset-password-page'})
+                store.setOffProgressbar();
             }
         } catch (error) {
             store.setOffProgressbar();
             data.loading = false;
-            if (error.response.status === 422) {
-                store.setErrors(error.response.data.errors);
-            }
-
-        }
-
-
-    }
-
-    const verifyEmailByOTP = async (data) => {
-        data.loading = true;
-        store.clearErrors();
-        store.setOnProgressbar();
-
-        try {
-            await getCsrfCookie();
-            const res = await axios.post(`/api/email-verify`, {
-                otp: data.user.otp
-            });
-            data.loading = false;
-
-            if (res.data.success === true) {
-                store.setOffProgressbar();
-                store.setCanSeeEmailVerifyPage(false);
-                store.setCanSeeResetPassPage(true);
-                success(res.data.message);
-                router.push({ name: 'reset-password-page' })
-
-            }
-            if (res.data.success === false) {
-                // success(res.data.message);
-                // router.push({ name: 'reset-password-page' })
-                store.setOffProgressbar();
-                const errorArray = ['Invalid credentials'];
-                store.setErrors(errorArray);
-            }
-
-        } catch (error) {
-            data.loading = false;
-            store.setOffProgressbar();
-            if (error.response.status === 422) {
+            console.log('forgot password error', error);
+            if (parseInt(error.response.status) === 422) {
                 store.setErrors(error.response.data.errors);
             }
 
@@ -204,26 +177,31 @@ export default function useAuth() {
         data.loading = true;
         store.clearErrors();
         store.setOnProgressbar();
-
-        // console.log(data)
         try {
             await getCsrfCookie();
-            const res = await axios.post(`/api/reset-password`, {
-                password: data.user.password
-            });
+            const res = await axios.post(`/api/reset-password`, data.user);
             data.loading = false;
 
-            if (res.data.success === true) {
+            if (parseInt(res.status) === 200) {
                 store.setOffProgressbar();
                 success(res.data.message);
                 store.setCanSeeResetPassPage(false);
                 store.setCanSeeEmailVerifyPage(false)
                 router.push({ name: 'login-page' })
             }
+            if (parseInt(res.status) === 400) {
+                store.setOffProgressbar();
+                error(res.data.message);
+                // store.setCanSeeResetPassPage(false);
+                // store.setCanSeeEmailVerifyPage(false)
+                // router.push({ name: 'login-page' })
+            }
+
+
         } catch (error) {
             store.setOffProgressbar();
             data.loading = false;
-            if (error.response.status === 422) {
+            if (parseInt(error.response.status) === 422) {
                 store.setErrors(error.response.data.errors);
             }
 
@@ -242,7 +220,6 @@ export default function useAuth() {
         logout,
         register,
         forgetPassword,
-        verifyEmailByOTP,
         resetPassword,
         getUser
     };

@@ -1,9 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AdminLayout from '../layouts/DefaultLayout.vue'
-import AboutView from '../views/AboutView.vue'
 import GuestLayout from '../layouts/GuestLayout.vue';
-import { useAuthStore } from '@/stores/useAuthStore';
 
 // start 
 import CalendarView from '@/views/CalendarView.vue'
@@ -18,76 +14,19 @@ import AlertsView from '@/views/UiElements/AlertsView.vue'
 import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
 // end
-import { useProductStore } from '@/stores/useProductStore';
+
+import authRouteHelper from '@/helpers/authRouteHelper';
+const {
+  checkIfUserIsLoggedIn,
+  checkIfUserIsNotLoggedIn,
+  registerNavigationAttempt,
+  loginNavigationAttempt,
+  ifNotSelectProduct,
+  userPageLoadBeforeGetUserData,
+  userProductPageLoadBeforeGetProducts
+} = authRouteHelper();
 
 
-
-
-const checkIfUserIsLoggedIn = (to, from, next) => {
-  const store = useAuthStore();
-  if (store.access_token) {
-    next('/');
-  } else {
-    next();
-  }
-}
-
-const checkIfUserIsNotLoggedIn = (to, from, next) => {
-  const store = useAuthStore();
-  if (!store.access_token) {
-    store.setClearResetPassPageSeeLogic();
-    next('/login');
-  } else {
-    next();
-  }
-}
-
-const checkUserCanSeeEmailVerifyPage = (to, from, next) => {
-  const store = useAuthStore();
-  if (!store.canSeeEmailVerifyPage || store.canSeeEmailVerifyPage === 'false') {
-    store.setClearResetPassPageSeeLogic();
-    next('/login');
-  } else {
-    next();
-  }
-}
-
-const checkUserCanSeeResetPassPage = (to, from, next) => {
-  const store = useAuthStore();
-  if (!store.canSeeResetPassPage || store.canSeeResetPassPage === 'false') {
-    store.setClearResetPassPageSeeLogic();
-    next('/login');
-  } else {
-    next();
-  }
-}
-
-
-
-const registerNavigationAttempt = (to, from, next) => {
-  const store = useAuthStore();
-  store.errors = null
-  next();
-}
-
-
-
-const loginNavigationAttempt = (to, from, next) => {
-  const store = useAuthStore();
-  store.errors = null
-  store.setClearResetPassPageSeeLogic();
-  next();
-}
-
-const ifNotSelectProduct = (to, from, next) => {
-  const productStore = useProductStore();
-  if (!productStore.selectedProduct) {
-    next('/products');
-  } else {
-    next();
-  }
-
-}
 
 
 const router = createRouter({
@@ -112,27 +51,24 @@ const router = createRouter({
           meta: {
             title: 'Products'
           },
-          beforeEnter: [checkIfUserIsNotLoggedIn]
-        },
-        {
-          path: '/add-product',
-          name: 'add-product-page',
-          component: () => import('../views/Product/AddProductView.vue'),
-          meta: {
-            title: 'Add product'
-          },
-          beforeEnter: [checkIfUserIsNotLoggedIn]
+          beforeEnter: [checkIfUserIsNotLoggedIn, userProductPageLoadBeforeGetProducts]
         },
 
+        // user route start here
         {
-          path: '/update-product',
-          name: 'update-product-page',
-          component: () => import('../views/Product/UpdateProductView.vue'),
+          path: '/users',
+          name: 'all-users-page',
+          component: () => import('../views/User/UsersView.vue'),
           meta: {
-            title: 'Update product'
+            title: 'All users'
           },
-          beforeEnter: [checkIfUserIsNotLoggedIn, ifNotSelectProduct]
+          beforeEnter: [checkIfUserIsNotLoggedIn, userPageLoadBeforeGetUserData]
         },
+        // user route end here
+
+
+
+
 
 
         {
@@ -257,18 +193,12 @@ const router = createRouter({
           beforeEnter: [checkIfUserIsLoggedIn],
 
         },
-        {
-          path: '/otp-verify',
-          name: 'otp-verify-page',
-          component: () => import('../views/auth/OTPVerificationView.vue'),
-          beforeEnter: [checkIfUserIsLoggedIn, checkUserCanSeeEmailVerifyPage],
 
-        },
         {
-          path: '/reset-password',
+          path: '/api/reset-password/:token',
           name: 'reset-password-page',
           component: () => import('../views/auth/ResetPasswordView.vue'),
-          beforeEnter: [checkIfUserIsLoggedIn, checkUserCanSeeResetPassPage],
+          beforeEnter: [checkIfUserIsLoggedIn],
 
         },
 

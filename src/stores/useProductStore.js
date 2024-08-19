@@ -4,7 +4,9 @@ export const useProductStore = defineStore('product', {
     state: () => ({
         products: [],
         productsWithPaginate: {},
-        selectedProduct: null,
+        selectedProduct: {},
+        productDialog: false,
+        isProductPaginate: 1,
     }),
 
 
@@ -15,7 +17,11 @@ export const useProductStore = defineStore('product', {
         },
         getSelectedProduct() {
             return this.selectedProduct
+        },
+        getOnShowProductsPaginate() {
+            return this.isProductPaginate >= 2
         }
+
     },
 
 
@@ -29,6 +35,15 @@ export const useProductStore = defineStore('product', {
         },
         setSelectedProduct(product) {
             this.selectedProduct = product
+        },
+        setOnProductDialog() {
+            this.productDialog = true;
+        },
+        setOffProductDialog() {
+            this.productDialog = false;
+        },
+        setOnShowProductsPaginate(page) {
+            this.isProductPaginate = page
         }
     },
 });

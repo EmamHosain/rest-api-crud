@@ -5,9 +5,7 @@ import useAuth from './composables/useAuth';
 import { useAuthStore } from './stores/useAuthStore';
 import Preloader from './components/auth/Preloader.vue';
 import Progressbar from './components/auth/Progressbar.vue';
-import useProduct from './composables/useProduct';
 
-const { getProducts } = useProduct();
 const { getUser } = useAuth();
 const store = useAuthStore();
 
@@ -18,9 +16,9 @@ onBeforeMount(async () => {
 
 
 onMounted(async () => {
-  if (store.access_token) {
+  if (store.getToken) {
     await getUser();
-    await getProducts();
+    // await getProducts();
     await store.setEndPreloader();
   }
   await store.setEndPreloader();

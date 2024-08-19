@@ -15,10 +15,10 @@ const { register } = useAuth();
 
 const data = reactive({
   user: {
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+    name: "admin",
+    email: "admin@gmail.com",
+    password: "password",
+    password_confirmation: "password",
   },
 });
 </script>
